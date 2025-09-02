@@ -1,65 +1,71 @@
 import { useEffect, useState } from 'react';
 import JobCard from '../components/JobCard';
 
-// Define the type for the job data received from the backend
 type Job = {
-    id: string; // The ID from MongoDB
-    company: string;
-    role: string;
-    location: string;
-    jobId: string;
-    url: string;
-    dateSaved: string; // The date as a string
-    resumeFilename: string; // The filename from the backend
+  company: string;
+  role: string;
+  location: string;
+  jobId: string;
+  appliedDate: string;
 };
 
 const Home = () => {
-    const [jobs, setJobs] = useState<Job[]>([]);
+  const [jobs, setJobs] = useState<Job[]>([]);
 
-    useEffect(() => {
-        // Function to fetch data from the backend API
-        const fetchJobs = async () => {
-            try {
-                // Use your deployed Render backend URL
-                const response = await fetch('https://job-tracker-backend-2-hpoz.onrender.com/api/jobs');
-                
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                
-                const data: Job[] = await response.json();
-                
-                // Set the fetched data to the state
-                setJobs(data);
-                
-            } catch (error) {
-                console.error("Failed to fetch jobs:", error);
-                // Optionally, set state to show an error message to the user
-            }
-        };
+  useEffect(() => {
+    fetch('https://job-tracker-backend-2-hpoz.onrender.com/api/jobs') // 
+      .then(res => res.json())
+      .then(data => {
+        // You might need to map the data to match your 'Job' type
+        const formattedJobs = data.map((job: any) => ({
+          company: job.company,
+          role: job.role,
+          location: job.location,
+          jobId: job.jobId,
+          appliedDate: job.dateSaved.split('T')[0] // Format date to YYYY-MM-DD
+        }));
+        setJobs(formattedJobs);
+      })
+      .catch(err => console.error("Failed to fetch jobs:", err));
 
-        // Call the fetch function when the component mounts
-        fetchJobs();
-    }, []); // The empty dependency array ensures this runs only once
+    /* The dummy data block is no longer needed
+    const dummyJobs: Job[] = [
+      {
+        company: "Google",
+        role: "Software Engineer",
+        location: "Bangalore",
+        jobId: "G12345",
+        appliedDate: "2025-07-20"
+      },
+      {
+        company: "Amazon",
+        role: "Data Analyst",
+        location: "Hyderabad",
+        jobId: "A78910",
+        appliedDate: "2025-07-18"
+      },
+      {
+        company: "Microsoft",
+        role: "DevOps Engineer",
+        location: "Remote",
+        jobId: "M45678",
+        appliedDate: "2025-07-15"
+      }
+    ];
+    setJobs(dummyJobs);
+    */
+  }, []);
 
-    return (
-        <div className="min-h-screen bg-gray-50 p-6">
-            <h1 className="text-2xl font-bold mb-6">Your Job Applications</h1>
-            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-                {jobs.map((job) => (
-                    // The backend returns an 'id' field, so use it as a unique key
-                    <JobCard 
-                        key={job.id} 
-                        company={job.company}
-                        role={job.role}
-                        location={job.location}
-                        jobId={job.jobId}
-                        appliedDate={job.dateSaved.split('T')[0]} // Format the date for display
-                    />
-                ))}
-            </div>
-        </div>
-    );
+  return (
+    <div className="min-h-screen bg-gray-50 p-6">
+      <h1 className="text-2xl font-bold mb-6">Your Job Applications</h1>
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+        {jobs.map((job, idx) => (
+          <JobCard key={idx} {...job} />
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default Home;
