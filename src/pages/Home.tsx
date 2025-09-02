@@ -1,4 +1,4 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import JobCard from '../components/JobCard';
 
 type Job = {
@@ -13,13 +13,23 @@ const Home = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
 
   useEffect(() => {
-   
-   /* fetch('http://localhost:9090/api/jobs') // Spring Boot API
+    fetch('https://job-tracker-backend-2-hpoz.onrender.com/api/jobs') // 
       .then(res => res.json())
-      .then(data => setJobs(data))
+      .then(data => {
+        // You might need to map the data to match your 'Job' type
+        const formattedJobs = data.map((job: any) => ({
+          company: job.company,
+          role: job.role,
+          location: job.location,
+          jobId: job.jobId,
+          appliedDate: job.dateSaved.split('T')[0] // Format date to YYYY-MM-DD
+        }));
+        setJobs(formattedJobs);
+      })
       .catch(err => console.error("Failed to fetch jobs:", err));
-      */
-     const dummyJobs: Job[] = [
+
+    /* The dummy data block is no longer needed
+    const dummyJobs: Job[] = [
       {
         company: "Google",
         role: "Software Engineer",
@@ -42,7 +52,8 @@ const Home = () => {
         appliedDate: "2025-07-15"
       }
     ];
-      setJobs(dummyJobs);
+    setJobs(dummyJobs);
+    */
   }, []);
 
   return (
