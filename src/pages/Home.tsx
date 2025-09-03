@@ -12,14 +12,7 @@ type Job = {
     resumeFilename?: string;
 };
 
-// Define the props for JobCard to correctly receive 'appliedDate'
-type JobCardProps = {
-    company: string;
-    role: string;
-    location: string;
-    jobId: string;
-    appliedDate: string;
-};
+// Removed the JobCardProps type from here as it's not used in this file
 
 const Home = () => {
     const [jobs, setJobs] = useState<Job[]>([]);
@@ -35,13 +28,13 @@ const Home = () => {
                 
                 const data: Job[] = await response.json();
                 
-                // Map the fetched data to include 'appliedDate'
+                // Map the fetched data to include 'appliedDate' for JobCard
                 const formattedJobs = data.map(job => ({
                     ...job,
-                    appliedDate: job.dateSaved.split('T')[0] // Format the date
+                    appliedDate: job.dateSaved.split('T')[0]
                 }));
 
-                setJobs(formattedJobs as Job[]); // Cast to satisfy TypeScript
+                setJobs(formattedJobs as Job[]);
                 
             } catch (error) {
                 console.error("Failed to fetch jobs:", error);
@@ -56,7 +49,6 @@ const Home = () => {
             <h1 className="text-2xl font-bold mb-6">Your Job Applications</h1>
             <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                 {jobs.map((job, idx) => (
-                    // Pass the mapped object to JobCard
                     <JobCard 
                         key={job.id || idx} 
                         company={job.company}
