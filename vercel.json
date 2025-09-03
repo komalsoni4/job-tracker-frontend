@@ -1,8 +1,12 @@
-{"rewrites": [
+{
+  "rewrites": [
     {
-      "source": "/api/jobs/:match*",
+      "source": "/api/jobs",
       "destination": "https://job-tracker-backend-2-hpoz.onrender.com/api/jobs"
+    },
+    {
+      "source": "/api/jobs/:path*",
+      "destination": "https://job-tracker-backend-2-hpoz.onrender.com/api/jobs/:path*"
     }
-  ]}
-
-
+  ]
+}
