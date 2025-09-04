@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://job-tracker-backend-2-hpnz.onrender.com/api/$1"
+    }
+  ]
+}
